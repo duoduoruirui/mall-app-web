@@ -70,5 +70,8 @@
         "router" : {
             "base" : ""
         }
-    }
+    },
+	"setting": {
+	        "sassImplementationName": "node-sass"
+	    }
 }

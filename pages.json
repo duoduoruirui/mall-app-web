@@ -243,6 +243,13 @@
 					}
 				}
 			}
+		},
+		{
+			"path": "pages/public/forget",
+			"style": {
+				"navigationBarTitleText": "找回密码",
+				"navigationStyle": "custom"
+			}
 		},{
 			"path": "pages/user/brandAttention",
 			"style": {

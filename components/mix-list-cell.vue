@@ -74,46 +74,55 @@
 	}
 </script>
 
-<style lang='scss'>
+<style lang="scss">
+/* 1. 声明变量（如果import不生效，直接写在这里是最稳的） */
+$uni-spacing-row-sm: 10px;
+$page-row-spacing: 30upx;
+$font-color-base: #606266;
+$font-color-dark: #303133;
+$font-color-light: #909399;
+$font-base: 28upx;
+$font-sm: 24upx;
 
-	.icon .mix-list-cell.b-b:after{
-		left: 90upx;
-	}
-	.mix-list-cell{
-		display:flex;
-		align-items:baseline;
-		padding: 20upx $page-row-spacing;
-		line-height:60upx;
-		position:relative;
-		
-		&.cell-hover{
-			background:#fafafa;
-		}
-		&.b-b:after{
-			left: 30upx;
-		}
+.mix-list-cell {
+    display: flex;
+    align-items: baseline;
+    padding: 20upx $page-row-spacing;
+    line-height: 60upx;
+    position: relative;
+    
+    &.cell-hover {
+        background: #fafafa;
+    }
+    &.b-b:after {
+        left: 30upx;
+    }
 
-		.cell-icon{
-			align-self:center;
-			width:56upx;
-			max-height:60upx;
-			font-size:38upx;
-		}
-		.cell-more{
-			align-self: center;
-			font-size:30upx;
-			color:$font-color-base;
-			margin-left:$uni-spacing-row-sm;
-		}
-		.cell-tit{
-			flex: 1;
-			font-size: $font-base;
-			color: $font-color-dark;
-			margin-right:10upx;
-		}
-		.cell-tip{
-			font-size: $font-sm+2upx;
-			color: $font-color-light;
-		}
-	}
+    .cell-icon {
+        align-self: center;
+        width: 56upx;
+        max-height: 60upx;
+        font-size: 38upx;
+    }
+    .cell-more {
+        align-self: center;
+        font-size: 30upx;
+        color: $font-color-base;
+        margin-left: $uni-spacing-row-sm;
+    }
+    .cell-tit {
+        flex: 1;
+        font-size: $font-base;
+        color: $font-color-dark;
+        margin-right: 10upx;
+    }
+    .cell-tip {
+        font-size: $font-sm + 2upx;
+        color: $font-color-light;
+    }
+}
+
+.icon .mix-list-cell.b-b:after {
+    left: 90upx;
+}
 </style>
