@@ -1,218 +1,102 @@
 <template>
-	<view class="container">
-		<view class="carousel">
-			<swiper indicator-dots circular=true duration="400">
-				<swiper-item class="swiper-item" v-for="(item,index) in imgList" :key="index">
-					<view class="image-wrapper">
-						<image :src="item.src" class="loaded" mode="aspectFill"></image>
-					</view>
-				</swiper-item>
-			</swiper>
-		</view>
+    <view class="container">
+       <view class="carousel">
+          <swiper indicator-dots circular=true duration="400">
+             <swiper-item class="swiper-item" v-for="(item,index) in imgList" :key="index">
+                <view class="image-wrapper">
+                   <image :src="item.src" class="loaded" mode="aspectFill"></image>
+                </view>
+             </swiper-item>
+          </swiper>
+       </view>
 
-		<view class="introduce-section">
-			<text class="title">{{product.name}}</text><br>
-			<text class="title2">{{product.subTitle}}</text>
-			<view class="price-box">
-				<text class="price-tip">¥</text>
-				<text class="price">{{product.price}}</text>
-				<text class="m-price">¥{{product.originalPrice}}</text>
-				<!-- <text class="coupon-tip">7折</text> -->
-			</view>
-			<view class="bot-row">
-				<text>销量: {{product.sale}}</text>
-				<text>库存: {{product.stock}}</text>
-				<text>浏览量: 768</text>
-			</view>
-		</view>
+       <view class="introduce-section">
+          <text class="title">{{product.name}}</text><br>
+          <text class="title2">{{product.subTitle}}</text>
+          <view class="price-box">
+             <text class="price-tip">¥</text>
+             <text class="price">{{product.price}}</text>
+             <text class="m-price">¥{{product.originalPrice}}</text>
+          </view>
+          <view class="bot-row">
+             <text>销量: {{product.sale || 0}}</text>
+             <text>库存: {{product.stock || 0}}</text>
+             </view>
+       </view>
 
-		<!--  分享 -->
-		<view class="share-section" @click="share">
-			<view class="share-icon">
-				<text class="yticon icon-xingxing"></text>
-				返
-			</view>
-			<text class="tit">该商品分享可领49减10红包</text>
-			<text class="yticon icon-bangzhu1"></text>
-			<view class="share-btn">
-				立即分享
-				<text class="yticon icon-you"></text>
-			</view>
+       <view class="share-section" @click="share" v-if="product.promotionType > 0">
+          <view class="share-icon">
+             <text class="yticon icon-xingxing"></text>
+             惠
+          </view>
+          <text class="tit">{{promotionTipList[0] || '正品保证 · 助力分享'}}</text>
+          <text class="yticon icon-bangzhu1"></text>
+          <view class="share-btn">
+             立即分享
+             <text class="yticon icon-you"></text>
+          </view>
+       </view>
 
-		</view>
+       <view class="c-list">
+          <view class="c-row b-b" @click="toggleSpec">
+             <text class="tit">购买类型</text>
+             <view class="con">
+                <text class="selected-text" v-for="(sItem, sIndex) in specSelected" :key="sIndex">
+                   {{sItem.name}}
+                </text>
+             </view>
+             <text class="yticon icon-you"></text>
+          </view>
+          <view class="c-row b-b" @click="toggleAttr">
+             <text class="tit">商品参数</text>
+             <view class="con">
+                <text class="con t-r">查看</text>
+             </view>
+             <text class="yticon icon-you"></text>
+          </view>
+          <view class="c-row b-b" @click="toggleCoupon('show')">
+             <text class="tit">优惠券</text>
+             <text class="con t-r red">领取优惠券</text>
+             <text class="yticon icon-you"></text>
+          </view>
+          <view class="c-row b-b" v-if="promotionTipList.length > 0">
+             <text class="tit">促销活动</text>
+             <view class="con-list">
+                <text v-for="item in promotionTipList" :key="item">{{item}}</text>
+             </view>
+          </view>
+          <view class="c-row b-b" v-if="serviceList.length > 0">
+             <text class="tit">服务</text>
+             <view class="bz-list con">
+                <text v-for="item in serviceList" :key="item">{{item}} ·</text>
+             </view>
+          </view>
+       </view>
 
-		<view class="c-list">
-			<view class="c-row b-b" @click="toggleSpec">
-				<text class="tit">购买类型</text>
-				<view class="con">
-					<text class="selected-text" v-for="(sItem, sIndex) in specSelected" :key="sIndex">
-						{{sItem.name}}
-					</text>
-				</view>
-				<text class="yticon icon-you"></text>
-			</view>
-			<view class="c-row b-b" @click="toggleAttr">
-				<text class="tit">商品参数</text>
-				<view class="con">
-					<text class="con t-r">查看</text>
-				</view>
-				<text class="yticon icon-you"></text>
-			</view>
-			<view class="c-row b-b" @click="toggleCoupon('show')">
-				<text class="tit">优惠券</text>
-				<text class="con t-r red">领取优惠券</text>
-				<text class="yticon icon-you"></text>
-			</view>
-			<view class="c-row b-b">
-				<text class="tit">促销活动</text>
-				<view class="con-list">
-					<text v-for="item in promotionTipList" :key="item">{{item}}</text>
-				</view>
-			</view>
-			<view class="c-row b-b">
-				<text class="tit">服务</text>
-				<view class="bz-list con">
-					<text v-for="item in serviceList" :key="item">{{item}} ·</text>
-				</view>
-			</view>
-		</view>
+       <view class="brand-info" v-if="brand && brand.name">
+          <view class="d-header">
+             <text>品牌信息</text>
+          </view>
+          <view class="brand-box" @click="navToBrandDetail()">
+             <view class="image-wrapper">
+                <image :src="brand.logo" class="loaded" mode="aspectFit"></image>
+             </view>
+             <view class="title">
+                <text>{{brand.name}}</text>
+                <text v-if="brand.firstLetter">品牌首字母：{{brand.firstLetter}}</text>
+             </view>
+          </view>
+       </view>
 
-		<!-- 评价 -->
-		<view class="eva-section">
-			<view class="e-header">
-				<text class="tit">评价</text>
-				<text>(86)</text>
-				<text class="tip">好评率 100%</text>
-				<text class="yticon icon-you"></text>
-			</view>
-			<view class="eva-box">
-				<image class="portrait" src="http://img3.imgtn.bdimg.com/it/u=1150341365,1327279810&fm=26&gp=0.jpg" mode="aspectFill"></image>
-				<view class="right">
-					<text class="name">Leo yo</text>
-					<text class="con">商品收到了，79元两件，质量不错，试了一下有点瘦，但是加个外罩很漂亮，我很喜欢</text>
-					<view class="bot">
-						<text class="attr">购买类型：XL 红色</text>
-						<text class="time">2019-04-01 19:21</text>
-					</view>
-				</view>
-			</view>
-		</view>
+       <view class="detail-desc">
+          <view class="d-header">
+             <text>图文详情</text>
+          </view>
+          <rich-text :nodes="desc"></rich-text>
+       </view>
 
-		<!-- 品牌信息 -->
-		<view class="brand-info">
-			<view class="d-header">
-				<text>品牌信息</text>
-			</view>
-			<view class="brand-box" @click="navToBrandDetail()">
-				<view class="image-wrapper">
-					<image :src="brand.logo" class="loaded" mode="aspectFit"></image>
-				</view>
-				<view class="title">
-					<text>{{brand.name}}</text>
-					<text>品牌首字母：{{brand.firstLetter}}</text>
-				</view>
-			</view>
-		</view>
-
-		<view class="detail-desc">
-			<view class="d-header">
-				<text>图文详情</text>
-			</view>
-			<rich-text :nodes="desc"></rich-text>
-		</view>
-
-		<!-- 底部操作菜单 -->
-		<view class="page-bottom">
-			<navigator url="/pages/index/index" open-type="switchTab" class="p-b-btn">
-				<text class="yticon icon-xiatubiao--copy"></text>
-				<text>首页</text>
-			</navigator>
-			<navigator url="/pages/cart/cart" open-type="switchTab" class="p-b-btn">
-				<text class="yticon icon-gouwuche"></text>
-				<text>购物车</text>
-			</navigator>
-			<view class="p-b-btn" :class="{active: favorite}" @click="toFavorite">
-				<text class="yticon icon-shoucang"></text>
-				<text>收藏</text>
-			</view>
-
-			<view class="action-btn-group">
-				<button type="primary" class=" action-btn no-border buy-now-btn" @click="buy">立即购买</button>
-				<button type="primary" class=" action-btn no-border add-cart-btn" @click="addToCart">加入购物车</button>
-			</view>
-		</view>
-
-
-		<!-- 规格-模态层弹窗 -->
-		<view class="popup spec" :class="specClass" @touchmove.stop.prevent="stopPrevent" @click="toggleSpec">
-			<!-- 遮罩层 -->
-			<view class="mask"></view>
-			<view class="layer attr-content" @click.stop="stopPrevent">
-				<view class="a-t">
-					<image :src="product.pic"></image>
-					<view class="right">
-						<text class="price">¥{{product.price}}</text>
-						<text class="stock">库存：{{product.stock}}件</text>
-						<view class="selected">
-							已选：
-							<text class="selected-text" v-for="(sItem, sIndex) in specSelected" :key="sIndex">
-								{{sItem.name}}
-							</text>
-						</view>
-					</view>
-				</view>
-				<view v-for="(item,index) in specList" :key="index" class="attr-list">
-					<text>{{item.name}}</text>
-					<view class="item-list">
-						<text v-for="(childItem, childIndex) in specChildList" v-if="childItem.pid === item.id" :key="childIndex" class="tit"
-						 :class="{selected: childItem.selected}" @click="selectSpec(childIndex, childItem.pid)">
-							{{childItem.name}}
-						</text>
-					</view>
-				</view>
-				<button class="btn" @click="toggleSpec">完成</button>
-			</view>
-		</view>
-		<!-- 属性-模态层弹窗 -->
-		<view class="popup spec" :class="attrClass" @touchmove.stop.prevent="stopPrevent" @click="toggleAttr">
-			<!-- 遮罩层 -->
-			<view class="mask"></view>
-			<view class="layer attr-content no-padding" @click.stop="stopPrevent">
-				<view class="c-list">
-					<view v-for="item in attrList" class="c-row b-b" :key="item.key">
-						<text class="tit">{{item.key}}</text>
-						<view class="con">
-							<text class="con t-r">{{item.value}}</text>
-						</view>
-					</view>
-				</view>
-			</view>
-		</view>
-		<!-- 优惠券面板 -->
-		<view class="mask" :class="couponState===0 ? 'none' : couponState===1 ? 'show' : ''" @click="toggleCoupon">
-			<view class="mask-content" @click.stop.prevent="stopPrevent">
-				<!-- 优惠券页面，仿mt -->
-				<view class="coupon-item" v-for="(item,index) in couponList" :key="index" @click="addCoupon(item)">
-					<view class="con">
-						<view class="left">
-							<text class="title">{{item.name}}</text>
-							<text class="time">有效期至{{item.endTime | formatDateTime}}</text>
-						</view>
-						<view class="right">
-							<text class="price">{{item.amount}}</text>
-							<text>满{{item.minPoint}}可用</text>
-						</view>
-
-						<view class="circle l"></view>
-						<view class="circle r"></view>
-					</view>
-					<text class="tips">{{item.useType | formatCouponUseType}}</text>
-				</view>
-			</view>
-		</view>
-		<!-- 分享 -->
-		<share ref="share" :contentHeight="580" :shareList="shareList"></share>
-	</view>
+       ...
+    </view>
 </template>
 
 <script>
